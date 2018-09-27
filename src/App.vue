@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
     <h1>{{city}}</h1>
-    <h2>{{ Math.floor(temp - 273.15) }}</h2>
+    <h2 class="temp">{{ Math.floor(temp - 273.15) }}</h2>
       <input v-model="currentValue" @keyup.enter="getWeather" />
       <div class="button" @click="getWeather">Отправить</div>
     </div>
@@ -87,5 +87,9 @@ export default {
   background: #544d4d;
   margin-top: 20px;
   color: white;
+}
+
+.temp {
+  margin-bottom: 15px;
 }
 </style>
