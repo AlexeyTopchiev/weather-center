@@ -11,6 +11,7 @@
         :coords="[marker.lat, marker.lng]"
         zoom="17"
         style="width: 100%; height: 600px;"
+        :scroll-zoom="false"
         
       >
 
