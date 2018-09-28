@@ -20,7 +20,7 @@
           :coords="[marker.lat, marker.lng]"
           hint-content="Hint content 1"
           :balloon="{header: 'header', body: 'body', footer: 'footer'}"
-          :icon="{layout: 'default#image'}"
+          :icon="{layout: 'default#image', imageHref: markerIcon, imageSize: [60, 60], imageOffset: [-22, -55]}"
           cluster-name="1"
         ></ymap-marker>
 
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import markerImage from './assets/marker.png'
+
 import { yandexMap, ymapMarker } from 'vue-yandex-maps'
 
 
@@ -43,6 +45,7 @@ export default {
 
   data() {
     return {
+      markerIcon: markerImage,
       currentValue: null,
       city: '',
       temp: '',
