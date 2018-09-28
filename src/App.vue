@@ -6,18 +6,61 @@
       <input v-model="currentValue" @keyup.enter="getWeather" />
       <div class="button" @click="getWeather">Отправить</div>
     </div>
+    <div class="yandex">
+      <yandex-map 
+        :coords="[marker.lat, marker.lng]"
+        zoom="17"
+        style="width: 100%; height: 600px;"
+        
+      >
+
+        <ymap-marker 
+          marker-id="1"
+          marker-type="placemark"
+          :coords="[marker.lat, marker.lng]"
+          hint-content="Hint content 1"
+          :balloon="{header: 'header', body: 'body', footer: 'footer'}"
+          :icon="{layout: 'default#image'}"
+          cluster-name="1"
+        ></ymap-marker>
+
+      </yandex-map>
+    </div>
   </div>
 </template>
 
 <script>
+import { yandexMap, ymapMarker } from 'vue-yandex-maps'
+
+
 export default {
   name: 'app',
+
+  components: {
+    yandexMap, 
+    ymapMarker
+  },
 
   data() {
     return {
       currentValue: null,
       city: '',
-      temp: ''
+      temp: '',
+      marker: {
+        lat: null,
+        lng: null
+      },
+      
+       placemarks: [
+      {
+        coords: [54.8, 39.8],
+        properties: {}, // define properties here
+        options: {}, // define options here
+        clusterName: "1",
+        balloonTemplate: '<div>"Your custom template"</div>'
+        // callbacks: { click: function() {} }
+      }
+    ]
     }
   },
 
@@ -28,6 +71,7 @@ export default {
     }).then((locate) => { 
       // console.log(locate)
       const {lat, lng} = locate
+      this.marker = { lat, lng }
       return this.$http.get(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=30ebc50f631af7988b69008c0a7f8bda`)
     }).then((response) => {
       console.log('2222222', response)
@@ -64,8 +108,8 @@ export default {
   color: #2c3e50;
   margin: 0 auto;
   height: 100vh;
-  max-width: 425px;
-  min-height: 667px;
+  /* max-width: 425px;
+  min-height: 667px; */
   background: #d9c7c7;
   /* padding: 30px; */
 }
