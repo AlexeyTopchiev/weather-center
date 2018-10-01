@@ -5,6 +5,13 @@
     <h2 class="temp">{{ Math.floor(temp - 273.15) }}</h2>
       <input v-model="currentValue" @keyup.enter="getWeather" />
       <div class="button" @click="getWeather">Отправить</div>
+      <div class="user-info" v-for="(user, index) in userInfo" :key="index">
+        <div class="first-name">{{ user.first_name }}</div>
+        <div class="last-name">{{ user.last_name }}</div>
+        <div class="id">{{ user.id }}</div>
+        <img class="avatar" :src="user.avatar" />
+      </div>
+        <div class="button" @click="getUserInfo"></div>
     </div>
     <div class="yandex">
       <yandex-map 
@@ -32,7 +39,6 @@
 
 <script>
 import markerImage from './assets/marker.png'
-
 import { yandexMap, ymapMarker } from 'vue-yandex-maps'
 
 
@@ -64,16 +70,18 @@ export default {
         balloonTemplate: '<div>"Your custom template"</div>'
         // callbacks: { click: function() {} }
       }
-    ]
+    ],
+    userInfo: []
     }
   },
 
   mounted () {
   this.$getLocation()
     .then(coords => {
+      // console.log('111111111', coords)
       return coords
     }).then((locate) => { 
-      // console.log(locate)
+      console.log('@@@@@@', locate)
       const {lat, lng} = locate
       this.marker = { lat, lng }
       return this.$http.get(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=30ebc50f631af7988b69008c0a7f8bda`)
@@ -92,7 +100,14 @@ export default {
         this.city = response.body.name
         this.temp = response.body.main.temp
       })
-    }
+    },
+    getUserInfo() {
+      return this.$http.get('https://reqres.in/api/users?page=2').then(response => {
+
+      this.userInfo = response.body.data
+      console.log("3333333", response)
+  })
+  }
   }
 
 }
