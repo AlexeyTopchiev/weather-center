@@ -5,11 +5,13 @@
     <h2 class="temp">{{ Math.floor(temp - 273.15) }}</h2>
       <input v-model="currentValue" @keyup.enter="getWeather" />
       <div class="button" @click="getWeather">Отправить</div>
-      <div class="user-info" v-for="(user, index) in userInfo" :key="index">
-        <div class="first-name">{{ user.first_name }}</div>
-        <div class="last-name">{{ user.last_name }}</div>
-        <div class="id">{{ user.id }}</div>
-        <img class="avatar" :src="user.avatar" />
+      <div class="users-wrapper">
+        <div class="user-info" v-for="(user, index) in userInfo" :key="index">
+          <div class="first-name">{{ user.first_name }}</div>
+          <div class="last-name">{{ user.last_name }}</div>
+          <div class="id">{{ user.id }}</div>
+          <img class="avatar" :src="user.avatar" />
+        </div>
       </div>
         <div class="button" @click="getUserInfo"></div>
     </div>
@@ -81,12 +83,12 @@ export default {
       // console.log('111111111', coords)
       return coords
     }).then((locate) => { 
-      console.log('@@@@@@', locate)
+      console.log('getLocation', locate)
       const {lat, lng} = locate
       this.marker = { lat, lng }
       return this.$http.get(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=30ebc50f631af7988b69008c0a7f8bda`)
     }).then((response) => {
-      console.log('2222222', response)
+      console.log('getLocation2', response)
       this.city = response.body.name
       this.temp = response.body.main.temp
     })
@@ -96,20 +98,44 @@ export default {
     getWeather() {
       return this.$http.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.currentValue}&appid=30ebc50f631af7988b69008c0a7f8bda`)
       .then((response) => {
-        console.log('@@@@@@@@@@@', response)
+        console.log('getWeather', response)
         this.city = response.body.name
         this.temp = response.body.main.temp
       })
     },
     getUserInfo() {
-      return this.$http.get('https://reqres.in/api/users?page=2').then(response => {
+      console.log("getUserInfo")
+      this.$http.get('https://reqres.in/api/users?page=2').then(response => {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@', response)
+        this.userInfo = response.body.data
+        // return response
+      }).then(() => this.getUserID())
+    },
 
-      this.userInfo = response.body.data
-      console.log("3333333", response)
-  })
-  }
-  }
+    getUserID() {
+      this.userInfo.map((user) => {
+        return this.$http.post('https://reqres.in/api/users', { name: user.first_name, })
+        .then(response => {
+          console.log('getUserID', response)
+      }) 
+    // get status
+    response.status;
 
+    // get status text
+    response.statusText;
+
+    // get 'Expires' header
+    response.headers.get('Expires');
+
+    // get body data
+    this.someData = response.body;
+
+  }, response => {
+    // error callback
+  });
+
+    }
+  }
 }
 </script>
 
@@ -154,5 +180,13 @@ export default {
 
 .temp {
   margin-bottom: 15px;
+}
+
+.users-wrapper {
+  display: flex;
+}
+
+.user-info {
+  margin-right: 10px;
 }
 </style>
